@@ -10,13 +10,25 @@ using namespace std;
 typedef long long ll;
 typedef vector<int> vi;
 
+string toBinary(int n){
+    string r;
+    while(n){
+        r = (n%2==0 ? "0" : "1") + r;
+        n/=2;
+    }
+    return r;
+}
+
+void solve(){
+    int a,b;
+    cin >> a >> b;
+    // string ab = toBinary(a^b);
+    cout << (((a^b)==(a+b)) ? "No" : "Yes");
+    cout << endl;
+}
+
 int main(){
     FastIO
-
-    // 1100 ^ 0011 = 1111
-    // 12   ^ 3    = 15
-
-    // 1100 ^ 0010 = 1110
-    ll a = ~1;
-    cout << a;
+    int t; cin >> t;
+    while(t--) solve();
 }
