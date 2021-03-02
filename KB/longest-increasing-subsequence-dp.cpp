@@ -29,22 +29,26 @@ typedef vector<int> vi;
 3 7 40 80
 */ 
 
-vi lis(vi &arr, int l, int r){
-
-    // ith number
-    int i=0;
-    vi prev = lis(arr, l, i-1);
-    vi next = lis(arr, i+1, r);
-    if ((i-1 < 0 || prev[prev.size()-1] < arr[i]) && (i+1 > arr.size()-1 || arr[i] < next[next.size()-1])){
-        prev.push_back(arr[i]);
-        auto it = next.begin();
-        while(it!=next.end()) prev.push_back(*it++);
-        return prev;
+int lis(vi arr, vi &lis_arr){
+    
+    
+    for(int i=1; i<arr.size(); i++){
+        for(int j=0; j<=i; j++){
+            if(arr[j] < arr[i] && lis_arr[j] >= lis_arr[i]){
+                lis_arr[i] = 1 + lis_arr[j];
+            }
+        }
     }
+    return *max_element(lis_arr.begin(), lis_arr.end());
 }
 
 void solve(){
-
+    int n; cin >> n;
+    vi lis_arr(n,1);
+    // for(int i=0; i<n; i++) lis_arr.push_back(1);
+    vi arr(n);
+    for(auto &x : arr) cin >> x;
+    cout << lis(arr, lis_arr) << endl;
 }
 
 int main(){
