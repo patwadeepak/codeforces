@@ -16,54 +16,50 @@ typedef long long ll;
 typedef vector<int> vi;
 
 void solve(){
+
     int n, m; cin >> n >> m;
 
     vector<vector<int>> b;
-    vector<vector<int>> a;
+    set<vector<int>> a;
     for(int i=1; i<=n; i++){
         b.push_back({});
-        a.push_back({});
         for(int j=1; j<=m; j++){
             int x; cin >> x;
             b[i-1].push_back(x);
-            a[i-1] = {x, i, j};
+            a.insert({x, i, j});
         }
     }
-
-    sort(a.begin(), a.end());
 
     int temp=0;
-    int large = n*m-1, small = 0;
-    vi small_used;
-
+    vi col_done;
     for(int j=1; j<=m; j++){
         bool row_done= true;
-        while(row_done){
-
-            bool small_unused = true;
-            for(int s=0; s<small_used.size(); s++){
-                if(small_used[s]==small){
-                    small_unused = false;
-                    break;
-                }
+        auto small_it = a.begin();
+        auto large_it = a.rbegin();
+        auto small = *small_it;
+        auto large = *large_it;
+        bool col_not_done = true;
+        for(int k=0; k<col_done.size(); k++)
+            if(large[2] == col_done[k]) col_not_done = false;
+        col_done.push_back(large[2]);
+        while(row_done && col_not_done){
+            auto small = *small_it;
+            auto large = *large_it;
+            if(small[1] != large[1]){
+                temp = b[small[1]-1][small[2]-1];
+                b[small[1]-1][small[2]-1] = b[small[1]-1][large[2]-1];
+                a.erase({b[small[1]-1][large[2]-1], small[1], large[2]});
+                a.insert({b[small[1]-1][large[2]-1], small[1], small[2]});
+                b[small[1]-1][large[2]-1] = temp;
+                a.erase(small);
+                a.erase(large);
+                break;
             }
-
-            if(a[large][1] != a[small][1] && small_unused){
-                small_used.push_back(small);
-                temp = b[a[small][1]-1][a[small][2]-1];
-                b[a[small][1]-1][a[small][2]-1] = b[a[large][2]-1][a[small][1]-1];
-                b[a[large][2]-1][a[small][1]-1] = temp;
-                row_done = false;
-            }
-            small++;
-            if(!row_done){
-                small=0;
-                large++;
+            else {
+                small_it++;
             }
         }
     }
-
-    cout << endl;
 
     for(int i=0; i < n; i++){
         for(int j=0; j < m; j++){
